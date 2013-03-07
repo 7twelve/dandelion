@@ -9,7 +9,7 @@ require 'yaml'
 module Dandelion
   module Command
     class InvalidCommandError < StandardError; end
-    
+
     class Base
       class << self
         @@commands = {}
@@ -23,11 +23,11 @@ module Dandelion
           raise InvalidCommandError unless @@commands.include?(name)
           @@commands[name]
         end
-        
+
         def commands
           @@commands.keys
         end
-        
+
         def require_commands
           Dir.glob(File.join(File.dirname(__FILE__), 'command', '*.rb')) { |file| require file }
         end
@@ -65,16 +65,16 @@ module Dandelion
             opts.on('--repo=[REPO]', 'Use the given repository') do |repo|
               options[:repo] = File.expand_path(repo)
             end
-            
+
             options[:config] = nil
             opts.on('--config=[CONFIG]', 'Use the given configuration file') do |config|
               options[:config] = File.expand_path(config)
             end
           end
         end
-        
+
         private
-        
+
         def closest_repo(dir)
           if File.exists?(File.join(dir, '.git'))
             dir
@@ -85,15 +85,15 @@ module Dandelion
       end
 
       def initialize(options)
-        @options = options        
+        @options = options
         @config = YAML.load_file(@options[:config])
         @repo = Git::Repo.new(@options[:repo])
-        
+
         yield(self) if block_given?
       end
-      
+
       protected
-      
+
       def log
         Dandelion.logger
       end
@@ -113,12 +113,12 @@ module Dandelion
           exit 1
         end
       end
-    
+
       def deployment(revision, backend = nil)
         begin
           backend ||= backend()
           revision_file = @config['revision_file'].nil? ? '.revision' : @config['revision_file']
-          options = { :exclude => @config['exclude'], :revision => revision, :revision_file => revision_file, :dry => @options[:dry] }
+          options = { :exclude => @config['exclude'], :local_path => @config['local_path'], :revision => revision, :revision_file => revision_file, :dry => @options[:dry] }
           Deployment::Deployment.create(@repo, backend, options)
         rescue Git::DiffError
           log.fatal('Error: could not generate diff')

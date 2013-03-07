@@ -4,7 +4,7 @@ module Dandelion
   module Backend
     class FTP < Backend::Base
       scheme 'ftp'
-      
+
       def initialize(config)
         require 'net/ftp'
         @config = config
@@ -12,7 +12,7 @@ module Dandelion
         @ftp.connect(@config['host'], @config['port'] || Net::FTP::FTP_PORT)
         @ftp.login(@config['username'], @config['password'])
         @ftp.passive = @config['passive'].nil? ? true : to_b(@config['passive'])
-        @ftp.chdir(@config['path']) if @config['path']
+        @ftp.chdir(@config['remote_path']) if @config['remote_path']
       end
 
       def read(file)
@@ -47,9 +47,9 @@ module Dandelion
         rescue Net::FTPPermError => e
         end
       end
-      
+
       def to_s
-        "ftp://#{@config['username']}@#{@config['host']}/#{@config['path']}"
+        "ftp://#{@config['username']}@#{@config['host']}/#{@config['remote_path']}"
       end
 
       private
@@ -77,7 +77,7 @@ module Dandelion
           end
         end
       end
-      
+
       def to_b(value)
         return [true, 'true', 1, '1', 'T', 't'].include?(value.class == String ? value.downcase : value)
       end
