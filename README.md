@@ -26,7 +26,8 @@ Git repository is searched for a file named `dandelion.yml`). Example:
     password: pass
     
     # Optional
-    path: path/to/deployment
+    local_path: path/in/repo
+    remote_path: path/on/server
     exclude:
         - .gitignore
         - dandelion.yml
@@ -48,7 +49,8 @@ Required:
 
 Optional:
 
- * `path`
+ * `local_path`
+ * `remote_path`
  * `exclude`
  * `port`
  * `revision_file` (defaults to .revision)
@@ -64,7 +66,8 @@ Required:
 
 Optional:
 
- * `path`
+ * `local_path`
+ * `remote_path`
  * `exclude`
  * `port`
  * `revision_file` (defaults to .revision)
@@ -80,7 +83,8 @@ Required:
 
 Optional:
 
- * `path`
+ * `local_path`
+ * `remote_path`
  * `exclude`
  * `revision_file` (defaults to .revision)
 
