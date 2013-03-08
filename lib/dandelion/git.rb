@@ -9,6 +9,9 @@ module Dandelion
       def initialize(dir)
         super(dir)
       end
+      def checkout(branch)
+        @repo.git.native(:checkout, {}, branch)
+      end
     end
 
     class Diff
@@ -58,27 +61,28 @@ module Dandelion
         @commit = @repo.commit(@options[:revision])
         raise RevisionError if @commit.nil?
         @tree = @commit.tree
+        self.checkout(@options[:branch])
       end
 
       def files
-        @repo.git.native(:checkout, {}, @options[:branch]) unless @options[:branch].nil?
-        Dir.chdir "#{@options[:local_path]}" unless @options[:local_path].nil?
+        Dir.chdir @options[:local_path] unless @options[:local_path].nil?
         @repo.git.native(:ls_files, {:base => false, :o => true, :c => true}).split("\n")
-        # OLD ls-tree method, leaving in for reference
-        # revision = @options[:revision]
-        # revision = "#{revision}:#{@options[:local_path]}" unless @options[:local_path].nil?
-        # @repo.git.native(:ls_tree, {:name_only => true, :r => true}, "#{revision}").split("\n")
       end
 
       def show(file)
         file
-        # OLD ls-tree method to get data
-        # puts (@tree / file).data
-        # exit
       end
 
       def revision
         @commit.sha
+      end
+
+      def current_branch
+        @repo.git.native(:rev_parse, {:abbrev_ref => true}, 'HEAD')
+      end
+
+      def checkout(branch)
+        @repo.git.native(:checkout, {}, branch)
       end
     end
   end

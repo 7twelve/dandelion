@@ -18,6 +18,7 @@ module Dandelion
 
       def initialize(repo, backend, options = {})
         @repo = repo
+
         @backend = backend
         @options = { :exclude => [], :branch => 'master', :local_path => '/', :revision => 'HEAD', :revision_file => '.revision' }.merge(options)
         @tree = Git::Tree.new(@repo, @options)
@@ -27,6 +28,20 @@ module Dandelion
           def @backend.write(file, data); end
           def @backend.delete(file); end
         end
+      end
+
+      def checkout(branch)
+        @branch = branch
+        log.info("Switching back to branch:   #{@branch}")
+        @repo.git.native(:checkout, {}, @branch)
+      end
+
+      def original_branch
+        @original_branch = @repo.git.native(:rev_parse, {:abbrev_ref => true}, 'HEAD')
+      end
+
+      def target_branch
+        @options[:branch]
       end
 
       def local_revision

@@ -32,14 +32,16 @@ module Dandelion
 
       def execute
         begin
+          original_branch = @repo.git.native(:rev_parse, {:abbrev_ref => true}, 'HEAD').to_s
           @deployment = deployment(@revision)
         rescue Git::RevisionError
           log.fatal("Invalid revision: #{@revision}")
           exit 1
         end
 
-        log.info("Remote revision:      #{@deployment.remote_revision || '---'}")
-        log.info("Deploying revision:   #{@deployment.local_revision}")
+        log.info("Remote revision:        #{@deployment.remote_revision || '---'}")
+        log.info("Deployment Branch:      #{@deployment.target_branch}")
+        log.info("Deploying revision:     #{@deployment.local_revision}")
 
         begin
           @deployment.validate
@@ -53,7 +55,9 @@ module Dandelion
         end
 
         @deployment.deploy
+        @deployment.checkout("#{original_branch}")
         log.info("Deployment complete")
+
       end
     end
   end
