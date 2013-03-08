@@ -4,11 +4,12 @@ Incremental Git repository deployment.
 
 Install
 -------
+```
   $ git clone git://github.com/7twelve/dandelion.git
   $ cd dandelion
   $ gem build dandelion.gemspec
   $ gem install ./dandelion-x.x.x.gem
-
+```
 Config
 ------
 Configuration options are specified in a YAML file (by default, the root of your
