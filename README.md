@@ -23,7 +23,7 @@ Git repository is searched for a file named `dandelion.yml`). Example:
     # Optional
     local_path: path/in/repo
     remote_path: path/on/server
-    branch: branch (defaults to master)
+    branch: branch_name
     exclude: (if you have specified a local_path, these files are relative to that)
         - .gitignore
         - dandelion.yml
@@ -45,9 +45,9 @@ Required:
 
 Optional:
 
- * `local_path`
+ * `local_path` (defaults to current path)
  * `remote_path`
- * `branch`
+ * `branch` (defaults to master)
  * `exclude`
  * `port`
  * `revision_file` (defaults to .revision)
@@ -63,9 +63,9 @@ Required:
 
 Optional:
 
- * `local_path`
+ * `local_path` (defaults to current path)
  * `remote_path`
- * `branch`
+ * `branch` (defaults to master)
  * `exclude`
  * `port`
  * `revision_file` (defaults to .revision)
@@ -81,9 +81,9 @@ Required:
 
 Optional:
 
- * `local_path`
+ * `local_path` (defaults to current path)
  * `remote_path`
- * `branch`
+ * `branch` (defaults to master)
  * `exclude`
  * `revision_file` (defaults to .revision)
 
