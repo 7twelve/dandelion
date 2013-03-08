@@ -61,11 +61,20 @@ module Dandelion
       end
 
       def files
-        @repo.git.native(:ls_tree, {:name_only => true, :r => true}, @options[:revision], @options[:local_path]).split("\n")
+        @repo.git.native(:checkout, {}, @options[:branch]) unless @options[:branch].nil?
+        Dir.chdir "#{@options[:local_path]}" unless @options[:local_path].nil?
+        @repo.git.native(:ls_files, {:base => false, :o => true, :c => true}).split("\n")
+        # OLD ls-tree method, leaving in for reference
+        # revision = @options[:revision]
+        # revision = "#{revision}:#{@options[:local_path]}" unless @options[:local_path].nil?
+        # @repo.git.native(:ls_tree, {:name_only => true, :r => true}, "#{revision}").split("\n")
       end
 
       def show(file)
-        (@tree / file).data
+        file
+        # OLD ls-tree method to get data
+        # puts (@tree / file).data
+        # exit
       end
 
       def revision

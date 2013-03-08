@@ -6,7 +6,7 @@ module Dandelion
     class SFTP < Backend::Base
       scheme 'sftp'
       gems 'net-sftp'
-      
+
       def initialize(config)
         require 'net/sftp'
         @config = { 'preserve_permissions' => true }.merge(config)
@@ -52,9 +52,9 @@ module Dandelion
           raise unless e.code == 2
         end
       end
-      
+
       def to_s
-        "sftp://#{@config['username']}@#{@config['host']}/#{@config['path']}"
+        "sftp://#{@config['username']}@#{@config['host']}/#{@config['remote_path']}"
       end
 
       private
@@ -69,14 +69,14 @@ module Dandelion
       end
 
       def cleanup(dir)
-        unless cleanpath(dir) == cleanpath(@config['path']) or dir == File.dirname(dir)
+        unless cleanpath(dir) == cleanpath(@config['remote_path']) or dir == File.dirname(dir)
           if empty?(dir)
             @sftp.rmdir!(dir)
             cleanup(File.dirname(dir))
           end
         end
       end
-      
+
       def empty?(dir)
         @sftp.dir.entries(dir).delete_if { |file| file.name == '.' or file.name == '..' }.empty?
       end
@@ -90,10 +90,10 @@ module Dandelion
           @sftp.mkdir!(dir)
         end
       end
-      
+
       def path(file)
-        if @config['path'] and !@config['path'].empty?
-          File.join(@config['path'], file)
+        if @config['remote_path'] and !@config['remote_path'].empty?
+          File.join(@config['remote_path'], file)
         else
           file
         end
