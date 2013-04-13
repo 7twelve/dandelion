@@ -12,7 +12,7 @@ module Dandelion
         @ftp.connect(@config['host'], @config['port'] || Net::FTP::FTP_PORT)
         @ftp.login(@config['username'], @config['password'])
         @ftp.passive = @config['passive'].nil? ? true : to_b(@config['passive'])
-        @ftp.chdir(@config['remote_path']) if @config['remote_path']
+        @ftp.chdir(@config['path']) if @config['path']
       end
 
       def read(file)
@@ -49,7 +49,7 @@ module Dandelion
       end
 
       def to_s
-        "ftp://#{@config['username']}@#{@config['host']}/#{@config['remote_path']}"
+        "ftp://#{@config['username']}@#{@config['host']}/#{@config['path']}"
       end
 
       private

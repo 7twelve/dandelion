@@ -54,7 +54,7 @@ module Dandelion
       end
 
       def to_s
-        "sftp://#{@config['username']}@#{@config['host']}/#{@config['remote_path']}"
+        "sftp://#{@config['username']}@#{@config['host']}/#{@config['path']}"
       end
 
       private
@@ -69,7 +69,7 @@ module Dandelion
       end
 
       def cleanup(dir)
-        unless cleanpath(dir) == cleanpath(@config['remote_path']) or dir == File.dirname(dir)
+        unless cleanpath(dir) == cleanpath(@config['path']) or dir == File.dirname(dir)
           if empty?(dir)
             @sftp.rmdir!(dir)
             cleanup(File.dirname(dir))
@@ -92,8 +92,8 @@ module Dandelion
       end
 
       def path(file)
-        if @config['remote_path'] and !@config['remote_path'].empty?
-          File.join(@config['remote_path'], file)
+        if @config['path'] and !@config['path'].empty?
+          File.join(@config['path'], file)
         else
           file
         end

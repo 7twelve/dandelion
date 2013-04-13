@@ -117,10 +117,16 @@ module Dandelion
       def deployment(revision, backend = nil)
         begin
           backend ||= backend()
-          revision_file = @config['revision_file'].nil? ? '.revision' : @config['revision_file']
-          target_branch = @config['branch'].nil? ? 'master' : @config['branch']
-          local_path = @config['local_path'].nil? ? './' : @config['local_path']
-          options = { :exclude => @config['exclude'], :branch => target_branch, :local_path => local_path, :revision => revision, :revision_file => revision_file, :dry => @options[:dry] }
+
+          options = {
+            :exclude        => @config['exclude'],
+            :branch         => @config['branch'].nil? ? 'master' : @config['branch'],
+            :local_path     => @config['local_path'].nil? ? './' : @config['local_path'],
+            :use_gitignore  => @config['use_gitignore'].nil? ? true : @config['use_gitignore'],
+            :revision       => revision,
+            :revision_file  => @config['revision_file'].nil? ? '.revision' : @config['revision_file'],
+            :dry            => @options[:dry]
+          }
           Deployment::Deployment.create(@repo, backend, options)
         rescue Git::DiffError
           log.fatal('Error: could not generate diff')

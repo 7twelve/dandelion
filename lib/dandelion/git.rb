@@ -9,9 +9,6 @@ module Dandelion
       def initialize(dir)
         super(dir)
       end
-      def checkout(branch)
-        @repo.git.native(:checkout, {}, branch)
-      end
     end
 
     class Diff
@@ -58,15 +55,20 @@ module Dandelion
       def initialize(repo, options = {})
         @repo = repo
         @options = options
+
         @commit = @repo.commit(@options[:revision])
         raise RevisionError if @commit.nil?
         @tree = @commit.tree
-        self.checkout(@options[:branch])
       end
 
       def files
-        Dir.chdir @options[:local_path] unless @options[:local_path].nil?
-        @repo.git.native(:ls_files, {:base => false, :o => true, :c => true}).split("\n")
+        if @options[:use_gitignore] == true
+          treeish = @options[:local_path].nil? ? revision : "#{revision}:#{@options[:local_path]}"
+          @repo.git.native(:ls_tree, {:name_only => true, :r => true}, treeish).split("\n")
+        else
+          Dir.chdir @options[:local_path] unless @options[:local_path].nil?
+          @repo.git.native(:ls_files, {:base => false, :o => true, :c => true}).split("\n")
+        end
       end
 
       def show(file)
@@ -77,13 +79,10 @@ module Dandelion
         @commit.sha
       end
 
-      def current_branch
-        @repo.git.native(:rev_parse, {:abbrev_ref => true}, 'HEAD')
+      def log
+        Dandelion.logger
       end
 
-      def checkout(branch)
-        @repo.git.native(:checkout, {}, branch)
-      end
     end
   end
 end
