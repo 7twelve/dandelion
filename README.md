@@ -16,19 +16,37 @@ Configuration options are specified in a YAML file (by default, the root of your
 Git repository is searched for a file named `dandelion.yml`). Example:
 
     # Required
+    # --------
+
     scheme: sftp
     host: example.com
     username: user
     password: pass
 
     # Optional
+    # --------
+    # Local Path (if not repository root)
     local_path: path/in/repo
-    path: path/on/server
+
+    # Remote path
+    path: path/to/deployment
+
+    # Remote file name in which the current revision is stored
+    revision_file: .revision
+
+    # Targets a specific branch that you are currently on (defaults to 'master')
     branch: branch_name
+
+    # These files (from Git) will not be uploaded during a deploy
     exclude: (if you have specified a local_path, these files are relative to that)
         - .gitignore
         - dandelion.yml
-    revision_file: .revision
+
+    # These files (from your working directory) will be uploaded on every deploy
+    additional:
+        - public/css/print.css
+        - public/css/screen.css
+        - public/js/main.js
 
 Schemes
 -------
@@ -50,6 +68,7 @@ Optional:
  * `path`
  * `branch` (defaults to master)
  * `exclude`
+ * `additional`
  * `port`
  * `revision_file` (defaults to .revision)
  * `preserve_permissions` (defaults to true)
@@ -68,6 +87,7 @@ Optional:
  * `path`
  * `branch` (defaults to master)
  * `exclude`
+ * `additional`
  * `port`
  * `revision_file` (defaults to .revision)
  * `passive` (defaults to true)
@@ -86,6 +106,7 @@ Optional:
  * `path`
  * `branch` (defaults to master)
  * `exclude`
+ * `additional`
  * `revision_file` (defaults to .revision)
 
 Usage

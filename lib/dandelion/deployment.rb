@@ -19,6 +19,7 @@ module Dandelion
       def initialize(repo, backend, options = {})
         @repo = repo
         @backend = backend
+
         @options = {
           :exclude => [],
           :branch => 'master',
@@ -67,6 +68,18 @@ module Dandelion
         Dandelion.logger
       end
 
+      def deploy_additional
+        if @options[:additional].nil? || @options[:additional].empty?
+          log.debug("No additional files to deploy")
+          return
+        end
+
+        @options[:additional].each do |file|
+          log.debug("Uploading additional file: #{file}")
+          @backend.write(file, IO.read(file))
+        end
+      end
+
       protected
 
       def exclude_file?(file)
@@ -95,8 +108,11 @@ module Dandelion
           deploy_changed
           deploy_deleted
         else
-          log.debug("Nothing to deploy")
+          log.debug("No changes to deploy")
         end
+
+        deploy_additional
+
         unless revisions_match?
           write_revision
         end
@@ -153,6 +169,8 @@ module Dandelion
             @backend.write(file, @tree.show(file))
           end
         end
+
+        deploy_additional
         write_revision
       end
     end
